@@ -13,4 +13,4 @@ source activate prune_llm
 cd ..
 
 
-python   main_singular_value_threshold.py   --prune_type weight_thresold   
+python   main_singular_value_threshold.py   --prune_type weight_thresold_act   
