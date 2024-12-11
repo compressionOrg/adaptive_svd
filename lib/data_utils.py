@@ -1,7 +1,7 @@
 import numpy as np
 import random
 import torch
-from datasets import load_dataset
+from datasets import load_dataset,load_from_disk
 
 
     
@@ -17,9 +17,10 @@ class TokenizerWrapper:
 
 def get_c4(nsamples, seed, seqlen, tokenizer):
     # Load train and validation datasets
-    traindata = load_dataset('allenai/c4', data_files={'train': 'en/c4-train.00000-of-01024.json.gz'}, ignore_verifications=True)["train"]
-    valdata = load_dataset('allenai/c4', data_files={'validation': 'en/c4-validation.00000-of-00008.json.gz'}, ignore_verifications=True)["validation"]
-
+    # traindata = load_dataset('allenai/c4', data_files={'train': 'en/c4-train.00000-of-01024.json.gz'}, ignore_verifications=True)["train"]
+    # valdata = load_dataset('allenai/c4', data_files={'validation': 'en/c4-validation.00000-of-00008.json.gz'}, ignore_verifications=True)["validation"]
+    traindata = load_from_disk("datasets/c4/train")
+    valdata = load_from_disk("datasets/c4/validation")
     # Generate samples from training set
     random.seed(seed)
     trainloader = []
@@ -45,9 +46,10 @@ def get_c4(nsamples, seed, seqlen, tokenizer):
 # Load and process wikitext2 dataset
 def get_wikitext2(nsamples, seed, seqlen, tokenizer):
     # Load train and test datasets
-    traindata = load_dataset('wikitext', 'wikitext-2-raw-v1', split='train')
-    testdata = load_dataset('wikitext', 'wikitext-2-raw-v1', split='test')
-
+    # traindata = load_dataset('wikitext', 'wikitext-2-raw-v1', split='train')
+    # testdata = load_dataset('wikitext', 'wikitext-2-raw-v1', split='test')
+    traindata = load_from_disk("datasets/wikitext/train")
+    testdata = load_from_disk("datasets/wikitext/test")
     # Encode datasets
     trainenc = tokenizer(" ".join(traindata['text']), return_tensors='pt')
     testenc = tokenizer("\n\n".join(testdata['text']), return_tensors='pt')

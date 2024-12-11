@@ -37,7 +37,7 @@ Overall: 0.0535 - Singular value
 """
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--model', default="meta-llama/Llama-2-7b-chat-hf", type=str, help='LLaMA model')
+    parser.add_argument('--model', default="Enoch/llama-7b-hf", type=str, help='LLaMA model')
     parser.add_argument('--seed', type=int, default=0, help='Seed for sampling the calibration data.')
     parser.add_argument('--nsamples', type=int, default=128, help='Number of calibration samples.')
     parser.add_argument("--cache_dir", default="./llm_weights", type=str )
@@ -126,11 +126,11 @@ def main():
 
     layers_singular_value = None
     if args.estimate_rank:
-        if os.path.exists("data/singular_values_llama-2-7b.pt"):
-            layers_singular_value = torch.load("data/singular_values_llama-2-7b.pt")
+        if os.path.exists("data/singular_values_{}.pt".format(model_name)):
+            layers_singular_value = torch.load("data/singular_values_{}.pt".format(model_name))
         else:
             layers_singular_value = rank_analysis_weight(args, model, tokenizer, device)
-            torch.save(layers_singular_value, "data/singular_values_llama-2-7b.pt")
+            torch.save(layers_singular_value, "data/singular_values_{}.pt".format(model_name))
 
 
 

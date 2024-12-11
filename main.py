@@ -27,7 +27,7 @@ def get_llm(model_name, cache_dir="llm_weights"):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--model', default="meta-llama/Llama-2-7b-chat-hf", type=str, help='LLaMA model')
+    parser.add_argument('--model', default="Enoch/llama-7b-hf", type=str, help='LLaMA model')
     parser.add_argument('--seed', type=int, default=0, help='Seed for sampling the calibration data.')
     parser.add_argument('--nsamples', type=int, default=128, help='Number of calibration samples.')
     parser.add_argument("--cache_dir", default="./llm_weights", type=str )
