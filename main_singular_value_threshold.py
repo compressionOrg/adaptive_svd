@@ -12,6 +12,7 @@ from timeit import default_timer as timer
 from datetime import timedelta
 from categories import subcategories, categories
 import pandas as pd
+from pdb import set_trace as st 
 
 
 ####
@@ -109,6 +110,11 @@ def main():
 
     model_name = args.model.split("/")[-1]
     print(f"loading llm model {args.model}")
+    
+    # Offline load moodel
+    args.model = args.cache_dir + "/models--" + args.model.replace("/", "--") + "/model"
+
+    
     model = get_llm(args.model, args.cache_dir)
 
     file_name = open(f"logs/{model_name}_{args.prune_type}_rank_reduction_ratio_{args.rank_reduction_ratio}_rank_thresold_{args.rank_thresold}_Lamda_{args.Lamda}.txt", "w")
@@ -170,6 +176,11 @@ def main():
             rank_pruning = weight_thresold_scale_bymean(args, layers_singular_value, file_name)
             rank_reduction_weight(args, model, tokenizer, rank_pruning, device)
 
+        elif args.prune_type == "weight_thresold_scale_dlp":
+            print(f"\n Pruning type: {args.prune_type}\n", file=file_name, flush=True)
+            rank_pruning = weight_thresold_scale_dlp(args, layers_singular_value, file_name)
+            rank_reduction_weight(args, model, tokenizer, rank_pruning, device)
+        
 
         ######## act
         elif args.prune_type == "weight_thresold_act":

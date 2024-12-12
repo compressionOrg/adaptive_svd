@@ -32,10 +32,10 @@ Overall: 0.0535 - Singular value
 """
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--model', default="meta-llama/Llama-2-7b-chat-hf", type=str, help='LLaMA model')
+    parser.add_argument('--model', default="Enoch/llama-7b-hf", type=str, help='LLaMA model')
     parser.add_argument('--seed', type=int, default=0, help='Seed for sampling the calibration data.')
     parser.add_argument('--nsamples', type=int, default=128, help='Number of calibration samples.')
-    parser.add_argument("--cache_dir", default="/data/ajay_data/MCI/llm_weights", type=str )
+    parser.add_argument("--cache_dir", default="llm_weights", type=str )
     parser.add_argument('--save', type=str, default=None, help='Path to save results.')
     parser.add_argument('--save_model', type=str, default=None, help='Path to save the pruned model.')
     parser.add_argument('--estimate_rank', type=bool, default=True, help='Check if the layerwise singular values need to be calculated.')
@@ -52,6 +52,10 @@ def main():
 
     model_name = args.model.split("/")[-1]
     print(f"loading llm model {args.model}")
+    
+    # Offline load moodel
+    args.model = args.cache_dir + "/models--" + args.model.replace("/", "--") + "/model"
+    
     model = get_llm(args.model, args.cache_dir)
 
     file_name = open(f"logs/{model_name}_singular_value_uniform.txt", "w")
@@ -69,11 +73,11 @@ def main():
 
     layers_singular_value = None
     if args.estimate_rank:
-        if os.path.exists("data/singular_values_llama-2-7b.pt"):
-            layers_singular_value = torch.load("data/singular_values_llama-2-7b.pt")
+        if os.path.exists("data/singular_values_{}.pt".format(model_name)):
+            layers_singular_value = torch.load("data/singular_values_{}.pt".format(model_name))
         else:
             layers_singular_value = rank_analysis_weight(args, model, tokenizer, device)
-            torch.save(layers_singular_value, "data/singular_values_llama-2-7b.pt")
+            torch.save(layers_singular_value, "data/singular_values_{}.pt".format(model_name))
 
     
 

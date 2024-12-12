@@ -69,11 +69,11 @@ def main():
     print ("model",model)
     layers_singular_value = None
     if args.estimate_rank:
-        if os.path.exists("data/singular_values_llama-2-7b.pt"):
-            layers_singular_value = torch.load("data/singular_values_llama-2-7b.pt")
+        if os.path.exists("data/singular_values_{}.pt".format(model_name)):
+            layers_singular_value = torch.load("data/singular_values_{}.pt".format(model_name))
         else:
             layers_singular_value = rank_analysis_weight(args, model, tokenizer, device)
-            torch.save(layers_singular_value, "data/singular_values_llama-2-7b.pt")
+            torch.save(layers_singular_value, "data/singular_values_{}.pt".format(model_name))
 
     if layers_singular_value is not None:
 

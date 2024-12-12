@@ -18,6 +18,6 @@ set -x
 # # Set CUDA device visibility
 # export CUDA_VISIBLE_DEVICES=$cuda_device
 
-CUDA_VISIBLE_DEVICES=1 python   main_singular_value_threshold.py   --prune_type weight_thresold_act   
+CUDA_VISIBLE_DEVICES=3 python   main_singular_value_threshold.py   --prune_type weight_thresold_act  >logs/main_singular_value_threshold.log
 
 set +x

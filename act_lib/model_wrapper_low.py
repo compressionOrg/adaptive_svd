@@ -200,7 +200,7 @@ def make_low_rank(
                 mask = torch.ones_like(tar, dtype=torch.bool)
                 # mask = tar.ne(-100)
                 # mask.torch.one_like()
-                
+                model = model.to(device)
                 with set_mask(model, mask):
                     model(inp)
 

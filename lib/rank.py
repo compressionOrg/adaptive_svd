@@ -44,7 +44,7 @@ def prepare_calibration_input(model, dataloader, device):
 
     dtype = next(iter(model.parameters())).dtype
 
-    print ("devicedevicedevicedevicedevicedevicedevicedevicedevicedevicedevicedevice",device)
+    print ("device",device)
 
     # pdb.set_trace()
 
@@ -98,6 +98,7 @@ def rank_analysis_weight(args, model, tokenizer, device):
         layers_singular_value[i] = {}
         # Perform Singular Value Decomposition (SVD)
         for name in subset:
+            print(f"svd layer {i} name {name}")
             W = subset[name].weight.data 
             _, singular_values, _ = torch.svd(W.to(torch.float32))
             layers_singular_value[i][name] = singular_values
