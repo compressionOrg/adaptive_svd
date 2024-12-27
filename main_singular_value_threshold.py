@@ -1,5 +1,6 @@
 import argparse
 import os 
+import json
 # os.environ['CUDA_VISIBLE_DEVICES'] = "0"
 import numpy as np
 import torch
@@ -47,7 +48,7 @@ def main():
     parser.add_argument('--estimate_rank', type=bool, default=True, help='Check if the layerwise singular values need to be calculated.')
     parser.add_argument("--data_dir", "-d", type=str, default="data")
 
-    parser.add_argument('--prune_type', type=str, default="error_weight_dynamic_thresold", help='Path to save the pruned model.')
+    parser.add_argument('--prune_type', type=str, default="weight_thresold_scale_dlp2", help='Path to save the pruned model.')
     parser.add_argument("--ntrain", "-k", type=int, default=5)
 
 
@@ -86,7 +87,7 @@ def main():
         help="entangle the prompt and response when computing the wanda score",
     )
 
-    parser.add_argument('--rank_reduction_ratio', type=float, default=0.5, help='rank reduction ratio')
+    parser.add_argument('--rank_reduction_ratio', type=float, default=0.1, help='rank reduction ratio')
     parser.add_argument('--rank_thresold', type=float, default=0.13625, help='Rank thresold to prune the model.')
     parser.add_argument('--Lamda', type=float, default=0.2, help='Rank thresold to prune the model.')
     
@@ -180,7 +181,14 @@ def main():
             print(f"\n Pruning type: {args.prune_type}\n", file=file_name, flush=True)
             rank_pruning = weight_thresold_scale_dlp(args, layers_singular_value, file_name)
             rank_reduction_weight(args, model, tokenizer, rank_pruning, device)
-        
+            
+        elif args.prune_type == "weight_thresold_scale_dlp2":
+            print(f"\n Pruning type: {args.prune_type}\n", file=file_name, flush=True)
+            ratio_file = "ratios" + "/" + model_name + "_sparsity_" + str(args.rank_reduction_ratio)  + ".json"
+            with open(ratio_file,  'r', encoding='utf-8') as json_file:
+                imp_ratio = json.load(json_file)
+            rank_pruning = weight_thresold_scale_dlp2(args, imp_ratio, layers_singular_value, file_name)
+            rank_reduction_weight(args, model, tokenizer, rank_pruning, device)        
 
         ######## act
         elif args.prune_type == "weight_thresold_act":
